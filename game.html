@@ -1,0 +1,421 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>遺産分割つかんでGO｜ドラッグ操作テスト</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f7f8fa;color:#263342;font-family:'Yu Gothic','Meiryo',sans-serif}main{max-width:1160px;margin:30px auto;padding:0 18px}h1{font-size:clamp(22px,3vw,32px);margin:0 0 9px}.sub{color:#64748b;margin:0 0 22px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid #e3e8ee;border-radius:18px;padding:20px;min-height:340px}.panel h2{font-size:19px;margin:0 0 14px}.dropzone{min-height:150px;padding:12px;border:2px dashed #cbd5e1;border-radius:13px;display:flex;align-content:flex-start;align-items:flex-start;flex-wrap:wrap;gap:10px;transition:.12s;background:#fcfdff}.dropzone.over{background:#e8f5ff;border-color:#2689d6}.asset{border:1px solid #d9e1eb;background:#fff;border-radius:12px;padding:13px 14px;min-width:135px;max-width:100%;cursor:grab;user-select:none;touch-action:none;box-shadow:0 3px 10px #15253610;font-size:15px}.asset:active{cursor:grabbing}.asset strong{display:block}.asset small{color:#52647b}.ghost{position:fixed;z-index:1000;pointer-events:none;opacity:.9;transform:rotate(-3deg);box-shadow:0 15px 32px #0003;cursor:grabbing}.placeholder{border:2px dashed #b3c3d7;border-radius:12px;background:#f4f8fc;min-width:135px;min-height:68px}.heir{margin:0 0 15px}.heirhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 7px}.heirhead b{font-size:17px}.amount{color:#275f9e;font-weight:bold}.heir .dropzone{min-height:95px}.hint{font-size:13px;color:#64748b;margin:8px 0 0}.actions{margin:20px 0}button{border:1px solid #b8c7d7;border-radius:9px;background:white;padding:10px 18px;font-size:15px;cursor:pointer}.editrow{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}.editrow input{padding:9px;min-width:120px;flex:1;border:1px solid #cbd5e1;border-radius:8px}[hidden]{display:none!important}.status{font-weight:bold;color:#17643e;min-height:24px}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}@media(max-width:700px){.layout{grid-template-columns:1fr}.panel{min-height:0}.asset{min-width:120px}}
+.palette{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:16px}.template{background:#f3f7fc;border:1px solid #cbd8e7;border-radius:12px;padding:12px 7px;text-align:center;cursor:grab;touch-action:none;user-select:none;font-size:14px}.template b{display:block}.trash{border:2px dashed #ff7777;border-radius:12px;padding:16px;text-align:center;margin-top:14px;background:#fff0f0;min-height:82px;color:#c92323;font-weight:700;display:flex;align-items:center;justify-content:center;gap:14px;transition:background .12s,border-color .12s}.trash svg{width:38px;height:38px;flex-shrink:0;fill:#e53935;stroke:#fff;stroke-width:1.8}.trash.over{background:#ffd0d0;border-color:#df2020;box-shadow:0 0 0 4px #f55a5a22}.trash-label{font-size:16px}@media(max-width:700px){.trash{gap:8px;padding:12px}.trash-label{font-size:13px}}.modalcover{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:2000;padding:15px}.modal{background:white;border-radius:16px;padding:24px;width:min(440px,100%);box-shadow:0 20px 70px #0003}.modal label{display:block;margin:12px 0 5px}.modal input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}.modal .buttons{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}.undo{margin:10px 0}.asset:focus-visible{outline:3px solid #2689d6}@media(max-width:700px){.palette{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.add-panel{min-height:0;margin-top:18px;padding:14px 20px}.add-toggle{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:700;font-size:17px;text-align:left;border:0;background:transparent;padding:8px 2px}.add-toggle:hover{color:#17649c}.add-hint{margin:10px 0 14px}.add-panel .palette{max-width:680px;margin:0 0 5px}.add-panel .template{min-height:70px}</style><style>.compare-panel{margin-top:18px;min-height:0}.compare-summary{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0 16px}.compare-stat{padding:12px 16px;background:#f3f7fc;border-radius:10px;min-width:180px}.compare-stat strong{display:block;font-size:21px;color:#275f9e}.compare-table-wrap{overflow-x:auto}.compare-table{border-collapse:collapse;width:100%;min-width:650px;font-size:14px}.compare-table th,.compare-table td{padding:12px 10px;border-bottom:1px solid #e4eaf2;text-align:right;white-space:nowrap}.compare-table th:first-child,.compare-table td:first-child{text-align:left}.compare-table th{background:#f3f7fc}.compare-note{font-size:13px;color:#64748b;margin-top:12px}.compare-bar{height:9px;background:#e7edf5;border-radius:8px;overflow:hidden;min-width:100px}.compare-bar>span{display:block;height:100%;background:#3479bd}.compare-warning{color:#9b5314;font-weight:600}</style><style>
+.setup-panel{margin:0 0 20px;min-height:0}.setup-panel h2{margin-bottom:6px}.setup-card{background:#f5f8fc;border:1px solid #dce6f2;border-radius:14px;padding:18px;max-width:650px}.setup-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;flex-wrap:wrap}.setup-choice{display:flex;gap:8px}.setup-choice button.active{background:#e4f0ff;border:2px solid #377bb8;color:#174f82;font-weight:700}.setup-step{display:flex;align-items:center;gap:14px}.setup-step button{font-size:22px;padding:4px 15px;min-width:48px}.setup-count{font-size:21px;font-weight:bold;min-width:48px;text-align:center}.setup-preview{font-size:14px;color:#53667d;margin:14px 0}.setup-start{background:#225f9f;color:#fff;border-color:#225f9f;font-weight:700;padding:12px 25px}.setup-change{margin:0 0 16px}.setup-note{color:#7a5633;font-size:13px;margin-top:10px}.setup-warn{color:#a33636;font-weight:700;min-height:20px}.setup-secondary{font-size:13px;color:#53667d;margin-top:12px}.setup-secondary button{font-size:13px;padding:6px 10px}.setup-hidden{display:none!important}.optional-names{margin:10px 0 16px}.optional-names summary{cursor:pointer;font-weight:700;color:#275f9e;padding:9px 0}.optional-name-row{display:flex;align-items:center;gap:12px;margin:8px 0}.optional-name-row label{min-width:85px;font-size:14px}.optional-name-row input{max-width:290px;width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:9px;font-size:15px}
+<style>#advancedPanel h3{margin:4px 0 10px;font-size:19px}#advancedPanel .setup-note{line-height:1.6}#advancedPanel .setup-start{margin-top:14px}#advancedPanel .setup-line{border-bottom:1px solid #e2eaf4;padding-bottom:9px}#advBack{margin:12px 0 0 10px}#advancedPanel .setup-warn{min-height:0}#advancedPanel .optional-names{margin-top:15px}</style><style>
+.extra-panel details{border:1px solid #dce5f0;border-radius:12px;margin:12px 0;padding:14px;background:#f8fbff}
+.extra-panel summary{cursor:pointer;font-weight:700;color:#1c4778;font-size:17px}
+.extra-panel table{border-collapse:collapse;width:100%;margin-top:12px;font-size:14px}
+.extra-panel th,.extra-panel td{padding:9px 8px;border-bottom:1px solid #dce5f0;text-align:right}
+.extra-panel th:first-child,.extra-panel td:first-child{text-align:left}
+.extra-panel .result-scroll{overflow-x:auto}
+.extra-panel .calc-caution,.extra-panel .calc-note{font-size:12px;color:#7a5239;line-height:1.7;margin:12px 0 0}
+.extra-panel .result-metrics{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.extra-panel .result-metrics div{background:white;border:1px solid #dce5f0;border-radius:9px;padding:12px;min-width:150px;flex:1}
+.extra-panel .result-metrics strong{display:block;margin-top:5px;color:#19589c;font-size:19px}
+.extra-panel .warn{color:#ad4b1e;font-weight:700}
+</style><style>
+/* 第15段階：結果グラフ（表示のみ） */
+.allocation-chart{margin:20px 0 6px;padding:18px 20px;border:1px solid #d9e4ef;border-radius:14px;background:#fbfdff}
+.allocation-chart h3{font-size:17px;margin:0 0 12px;color:#20344c}
+.allocation-legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px;font-size:13px;color:#50647a}
+.allocation-legend span{display:inline-flex;align-items:center;gap:7px}
+.allocation-legend i{display:inline-block;width:13px;height:13px;border-radius:3px}
+.allocation-legend i.legal{background:#527da9}
+.allocation-legend i.actual{background:#ed9b49}
+.allocation-person{border-top:1px solid #e5ecf4;padding:11px 0}
+.allocation-person-name{font-weight:700;margin-bottom:7px;color:#263b55}
+.allocation-line{display:grid;grid-template-columns:36px minmax(0,1fr) 112px;align-items:center;gap:9px;margin:5px 0}
+.allocation-line-label{font-size:12px;color:#526780}
+.allocation-track{height:19px;border-radius:4px;background:#edf2f7;overflow:hidden}
+.allocation-fill{height:100%;border-radius:4px;min-width:0}
+.allocation-fill.legal{background:#527da9}
+.allocation-fill.actual{background:#ed9b49}
+.allocation-fill.negative{background:#d45b5b}
+.allocation-amount{text-align:right;font-size:13px;color:#263b55;font-variant-numeric:tabular-nums}
+.allocation-footnote{font-size:12px;color:#63758b;line-height:1.7;margin:12px 0 0}
+@media(max-width:600px){.allocation-chart{padding:13px 11px}.allocation-line{grid-template-columns:30px minmax(0,1fr) 82px;gap:5px}.allocation-amount{font-size:11px}}
+</style><style>
+/* 第21段階：負の金額は中央の0より左に伸ばす */
+.allocation-track.signed{position:relative;overflow:visible;background:linear-gradient(to right,#f6f0f0 0 49.8%,#64748b 49.8% 50.2%,#edf2f7 50.2% 100%)}
+.allocation-track.signed .allocation-fill{position:absolute;top:0;height:100%;border-radius:3px}
+</style><style>
+/* 第16段階：ゲーム結果の見せ方のみ整理 */
+.compare-panel{min-height:0}.allocation-chart{margin:12px 0 18px}.inheritance-alert{padding:21px 24px;border:2px solid #dbe5f0;border-radius:14px;background:#f7faff;margin:18px 0 20px;line-height:1.7}
+.inheritance-alert strong{display:block;font-size:clamp(19px,2.6vw,25px);line-height:1.45}.inheritance-alert p{font-size:15px;margin:10px 0 0}.inheritance-alert.danger{background:#fff3f1;border-color:#ed9b90;color:#a52626}.inheritance-alert.ok{background:#f0f8f4;border-color:#b9dcc8;color:#17603b}.inheritance-alert.pending{background:#f5f8fc;border-color:#cbd9e9;color:#37536d}
+.alert-shortages{font-weight:800;font-size:clamp(21px,3vw,29px);margin-top:8px}.alert-shortages div{margin:4px 0}
+.all-details{border:1px solid #dce5f0;border-radius:13px;background:#f8fbff;overflow:hidden}.all-details>summary{cursor:pointer;padding:17px 20px;font-weight:700;color:#1b4e82;font-size:18px}.all-details>summary span{font-size:13px;font-weight:400;color:#61758c}.details-inside{padding:4px 20px 22px}.details-inside h3{margin:20px 0 12px;font-size:17px;color:#233f60}.details-inside .result-scroll{overflow-x:auto}.details-inside table{border-collapse:collapse;width:100%;font-size:14px}.details-inside .result-scroll th,.details-inside .result-scroll td{padding:10px 8px;border-bottom:1px solid #dce5f0;text-align:right;white-space:nowrap}.details-inside .result-scroll th:first-child,.details-inside .result-scroll td:first-child{text-align:left}.details-inside .calc-note,.details-inside .calc-caution{font-size:12px;color:#7a5239;line-height:1.7;margin:12px 0}.details-inside .warn{color:#ad4b1e;font-weight:700}.details-inside .result-metrics{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.details-inside .result-metrics div{background:white;border:1px solid #dce5f0;border-radius:9px;padding:12px;min-width:150px;flex:1}.details-inside .result-metrics strong{display:block;margin-top:5px;color:#19589c;font-size:19px}
+@media(max-width:600px){.inheritance-alert{padding:15px}.details-inside{padding:4px 12px 18px}.all-details>summary{padding:15px 12px}}
+
+/* 第18段階：二択で計算条件を切替 */
+.mode-picker{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}.mode-picker button{flex:1;min-width:190px;font-weight:700}.mode-picker button.active{background:#e4f0ff;color:#17558d;border:2px solid #377bb8}.mode-warning{background:#fff0ed;border:2px solid #e69a8c;border-radius:12px;padding:16px 19px;margin:14px 0 18px;color:#9c2d23;line-height:1.7}.mode-warning strong{font-size:19px;display:block;margin-bottom:6px}.mode-intro{font-size:13px;color:#63758a}.adjust-section{border:0!important;padding:0!important;margin:0!important}
+/* 第17段階：特別受益・寄与分の任意比較 */
+.adjust-section{margin:16px 0 20px;border:1px solid #dce5f0;border-radius:13px;overflow:hidden;background:#fff}
+.adjust-toggle{display:block;width:100%;text-align:left;padding:16px 20px;border:0;background:#f1f6fc;color:#20568d;font-size:17px;font-weight:750;cursor:pointer}
+.adjust-body{padding:17px 20px}.adjust-desc{font-size:13px;color:#60718a;line-height:1.8}
+.adjust-inputs{display:grid;gap:10px;margin:15px 0}.adjust-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(120px,1fr) minmax(120px,1fr);gap:12px;align-items:center;border-bottom:1px solid #e4eaf1;padding-bottom:10px}
+.adjust-row label{font-size:13px;color:#3a526b}.adjust-row input{width:100%;padding:9px;border:1px solid #bdcee1;border-radius:8px;font-size:16px;box-sizing:border-box}
+.adjust-row input:invalid{border-color:#cc4e4e}.adjust-heading{font-size:13px;font-weight:700;color:#37536d}
+.adjust-legend{display:flex;gap:17px;flex-wrap:wrap;margin:12px 0}.adjust-legend span{display:flex;align-items:center;gap:6px;font-size:12px}.adjust-legend i{display:inline-block;width:12px;height:12px;border-radius:2px}.adjust-fill{background:#468f86}
+.adjust-message{padding:12px 14px;border-radius:9px;background:#f2f7fb;color:#294d70;font-size:14px;line-height:1.7;margin-top:12px}
+.adjust-message.warning{background:#fff3ef;color:#a13e29}.adjust-summary{overflow-x:auto;margin-top:12px}.adjust-summary table{border-collapse:collapse;width:100%;font-size:13px}.adjust-summary td,.adjust-summary th{padding:9px;border-bottom:1px solid #dce5f0;text-align:right;white-space:nowrap}.adjust-summary td:first-child,.adjust-summary th:first-child{text-align:left}
+@media(max-width:600px){.adjust-body{padding:13px}.adjust-row{grid-template-columns:1fr 1fr}.adjust-row strong{grid-column:1/-1}.adjust-toggle{padding:14px}}
+.tax-explanation{margin-top:14px;padding:12px 14px;border:1px solid #dbe5f2;border-radius:10px;background:#fff;color:#334155;line-height:1.7}.tax-explanation strong{display:block;margin-bottom:4px;color:#17365d}.tax-explanation p{margin:0;font-size:14px}</style></head><body><main><h1>遺産分割 つかんでGO <span style="font-size:16px;color:#64748b">ゲーム版・遺留分／相続税（概算）</span></h1><p class="sub">財産をつかんだまま相続人の箱へ移動し、箱の上で離してください。</p><section class="panel setup-panel" id="heirSetup"><h2>① 相続人を選ぶ</h2><p class="hint">配偶者と子どもの人数を選んでください。</p><div class="setup-card"><div id="simpleSetup"><div class="setup-line"><strong>配偶者</strong><div class="setup-choice"><button type="button" id="spouseYes" class="active">いる</button><button type="button" id="spouseNo">いない</button></div></div><div class="setup-line"><strong>子ども</strong><div class="setup-step"><button type="button" id="childMinus" aria-label="子どもを1人減らす">－</button><span id="childCount" class="setup-count">2人</span><button type="button" id="childPlus" aria-label="子どもを1人増やす">＋</button></div></div><p id="heirPreview" class="setup-preview"></p><details class="optional-names" id="optionalNames"><summary>名前を入れる（必要な場合だけ）</summary><div id="optionalNameFields"></div></details><div id="setupWarning" class="setup-warn" role="alert"></div><button type="button" class="setup-start" id="startGame">この相続人で始める →</button><div class="setup-secondary">親・兄弟姉妹などが相続人になる場合は、<button type="button" id="advancedHeirs">詳細設定を開く</button>を使用してください。</div><div class="setup-note">※法定相続分は簡易試算です。代襲相続・養子などの説明は「詳細設定を開く」で確認できます。</div></div><div id="advancedPanel" hidden><h3>相続人の詳細設定</h3><p class="hint">子どもがいる場合は子ども、いない場合は父母など、その方々もいない場合は兄弟姉妹が相続人です。</p><div class="setup-line"><strong>配偶者</strong><div class="setup-choice"><button type="button" id="advSpouseYes">いる</button><button type="button" id="advSpouseNo">いない</button></div></div><div class="setup-line"><strong>子ども</strong><div class="setup-step"><button type="button" id="advChildMinus">－</button><span id="advChildCount" class="setup-count">0人</span><button type="button" id="advChildPlus">＋</button></div></div><div class="setup-line"><strong>父母など直系尊属</strong><div class="setup-step"><button type="button" id="advParentMinus">－</button><span id="advParentCount" class="setup-count">0人</span><button type="button" id="advParentPlus">＋</button></div></div><div class="setup-line"><strong>兄弟姉妹</strong><div class="setup-step"><button type="button" id="advSiblingMinus">－</button><span id="advSiblingCount" class="setup-count">0人</span><button type="button" id="advSiblingPlus">＋</button></div></div><p id="advExcluded" class="setup-note"></p><p id="advPreview" class="setup-preview"></p><details class="optional-names" id="advOptionalNames"><summary>名前を入れる（必要な場合だけ）</summary><div id="advNameFields"></div></details><p class="setup-warn" id="advWarning" role="alert"></p><button type="button" class="setup-start" id="advStart">この相続人で始める →</button> <button type="button" id="advBack">簡単設定に戻る</button><p class="setup-note">※代襲相続：本来相続するはずだった子などが先に亡くなっている場合、その人の法定相続分を代襲相続人が原則均等に分けます。養子：民法上は実子と同じく子として扱います。ただし相続税の法定相続人の人数には養子の算入制限があります。このゲームでは特殊な関係を自動計算しません。</p></div></div></section><div id="gameArea" hidden><div class="setup-change"><button id="changeHeirs" type="button">← 相続人を変更</button></div><div class="layout"><section class="panel"><h2>🟧 相続財産</h2><div class="dropzone" data-owner="未配分" id="unassigned"></div><p class="hint">カードをクリックすると金額・名前を編集できます。箱からここへ戻すこともできます。</p><div id="trash" class="trash" aria-label="ごみ箱：カードをここで離すと削除"><svg viewBox="0 0 40 44" aria-hidden="true" focusable="false"><path d="M10 10h20l-2 29H12L10 10Z"/><path d="M7 7h26v5H7z"/><path d="M15 4h10v4H15z"/><path d="M17 16v16M23 16v16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg><span class="trash-label">ごみ箱（ここにカードを離すと削除）</span></div><div class="undo"><button id="undo" hidden>↶ 直前の削除を元に戻す</button></div></section><section class="panel"><h2>🟦 相続人の箱</h2><div id="heirs"></div></section></div><section class="panel add-panel" id="addPanel"><button type="button" id="togglePalette" class="add-toggle" aria-expanded="false" aria-controls="paletteContent">＋ 財産を追加 <span id="paletteArrow">▾</span></button><div id="paletteContent" hidden><p class="hint add-hint">追加したい財産をつかみ、上の「相続財産」または相続人の箱へ移動してください。</p><div class="palette" id="palette"><div class="template" data-kind="土地">🟫<b>土地</b></div><div class="template" data-kind="建物">🏠<b>建物</b></div><div class="template" data-kind="預金">💰<b>現金・預金</b></div><div class="template" data-kind="株式">📈<b>株式</b></div><div class="template" data-kind="借入金">🧾<b>借入金</b></div><div class="template" data-kind="その他">📦<b>その他</b></div></div></div></section><div class="actions"><button id="reset">すべて未配分に戻す</button> <button id="edit">詳細設定</button> <button id="save">このPCに保存</button> <button id="load">保存データを読み込む</button> <button id="export">JSONを出力</button> <input type="file" id="import" accept=".json,application/json" style="display:none"><button id="importBtn">JSONを読み込む</button></div><section class="panel compare-panel" id="comparison"><h2>配分結果をグラフで比較</h2><div class="compare-summary"><div class="compare-stat">相続財産の合計（評価額）<strong id="compareTotal">0万円</strong></div><div class="compare-stat">未配分の財産<strong id="compareUnassigned">0万円</strong></div></div><div class="mode-picker" role="group" aria-label="計算条件の選択"><button type="button" id="modeBasic" class="active" aria-pressed="true">特別受益等を考慮しない場合</button><button type="button" id="modeAdjusted" aria-pressed="false">特別受益等を考慮した場合</button></div><div id="modeWarning" class="mode-warning" hidden><strong>⚠ ここでの計算結果は、あくまで参考です</strong>特別受益・寄与分は、遺産分割の比較に反映します。<br><br><b>相続税の計算では、特別受益・寄与分を課税財産総額に加減算せず、実際の配分額を基に計算します。</b><br><br>特別受益は相続税の加算対象期間外の暦年贈与とします。実際の税額とは異なる場合があります。</div><div id="basicView"><div class="allocation-chart" id="allocationChart" aria-label="法定相続額と実際の配分額の横棒グラフ"></div><div id="inheritanceAlert" class="inheritance-alert" role="status" aria-live="polite"></div></div><section class="adjust-section" id="adjustSection" hidden><div class="adjust-body" id="adjustBody"><p class="adjust-desc">必要な場合だけ金額を入力してください（単位：万円）。特別受益は生前に受けた贈与など、寄与分は財産の維持・増加への特別な貢献を想定します。どちらも当事者の合意や法的判断が必要なことがあります。</p><div class="adjust-inputs" id="adjustInputs"></div><div id="adjustMessage" class="adjust-message"></div><div id="adjustChart" class="allocation-chart"></div><p class="adjust-desc">※比較用の簡易式：調整後の取り分＝（現在の正味財産＋特別受益合計－寄与分合計）×法定相続割合－本人の特別受益＋本人の寄与分。実際の取得額はカードの配分額です。特別受益・寄与分の認定や対象者・算定方法には例外があり、この結果は法的な確定額ではありません。このモードでは遺留分の参考試算に反映しますが、相続税の課税財産総額には加減算しません。マイナスの取り分は返還義務を意味しません。</p></div></section><details class="all-details" id="allCalculationDetails"><summary>詳しい計算結果を見る <span>（配分・遺留分・相続税）</span></summary><div class="details-inside"><div id="legalDetailBlock"><h3>法定相続分と実際の配分額</h3><div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>相続人</th><th>法定相続分</th><th>法定相続額</th><th>実際の配分額</th><th>法定相続額との差</th></tr></thead><tbody id="compareRows"></tbody></table></div><p class="compare-note" id="compareNote">財産カードの移動・編集・追加・削除に合わせて自動更新します。</p></div><h3>遺留分の比較</h3><div id="reservedContent"></div><h3>相続税の概算</h3><div id="taxContent"></div><p class="calc-caution">※ゲーム用の簡易試算です。特別受益・寄与分は遺産分割の参考額に反映しますが、相続税の課税財産総額には加減算しません。債務負担・小規模宅地等の特例・保険金・葬式費用・各種税額控除・申告要件などを個別に判定しません。実際の遺留分侵害額・相続税額とは異なる場合があります。</p></div></details></section><section id="editor" class="panel" hidden><h2>財産・相続人を編集</h2><p class="hint">金額の単位は万円。編集後は「反映」を押してください。</p><div id="assetRows"></div><button id="addAsset">＋ 財産を追加</button><p>相続人名（1行に1人）</p><textarea id="peopleEdit" rows="4" style="width:100%;padding:12px"></textarea><p><button id="apply">編集を反映</button> <button id="cancelEdit">閉じる</button></p></section></div><div id="modalCover" class="modalcover" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">財産の編集</h2><label for="modalName">財産名</label><input id="modalName" maxlength="80"><label for="modalValue">財産額（万円）</label><input id="modalValue" type="number" step="1"><div id="cashBlock" hidden><label for="modalCash">換金価値（万円）</label><input id="modalCash" type="number" step="1"></div><div class="buttons"><button id="modalCancel">キャンセル</button><button id="modalOk">決定</button></div></div></div><div class="status sr-only" role="status" aria-live="polite" id="status"></div></main><script>
+'use strict';
+let assets=[{id:'land',icon:'🟫',name:'自宅土地',value:3000},{id:'house',icon:'🏠',name:'自宅建物',value:300},{id:'deposit',icon:'💰',name:'現預金①',value:2000},{id:'stock',icon:'💰',name:'現預金②',value:500}];
+let people=['配偶者','長男','次男'];let ownership=Object.fromEntries(assets.map(a=>[a.id,'未配分']));
+const heirs=document.getElementById('heirs');function buildHeirs(){heirs.replaceChildren();for(const name of people){const section=document.createElement('div');section.className='heir';const head=document.createElement('div');head.className='heirhead';const label=document.createElement('b');label.textContent='📦 '+name+' の箱';const amount=document.createElement('span');amount.className='amount';amount.dataset.total=name;head.append(label,amount);const zone=document.createElement('div');zone.className='dropzone';zone.dataset.owner=name;section.append(head,zone);heirs.append(section)}}
+buildHeirs();let nodes=new Map();function buildNodes(){nodes=new Map();for(const a of assets){const el=document.createElement('div');el.className='asset';el.dataset.asset=a.id;el.setAttribute('role','button');el.tabIndex=0;el.title='クリックで金額編集・ドラッグで移動';const name=document.createElement('strong');name.textContent=a.icon+' '+a.name;const price=document.createElement('small');price.textContent=a.value.toLocaleString('ja-JP')+'万円';el.append(name,price);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCard(a.id)}});nodes.set(a.id,el)}}
+buildNodes();let zones=[...document.querySelectorAll('.dropzone')];function refreshZones(){zones=[...document.querySelectorAll('.dropzone')]} const fmt=n=>n.toLocaleString('ja-JP')+'万円';
+// 正式版 calc_legal_shares_simple と同じ相続人名の簡易分類・法定相続割合
+function legalShares(names){
+ const spouse=names.filter(n=>n==='配偶者'||n.startsWith('配偶者（')||n==='妻'||n==='夫');
+ const children=names.filter(n=>/^子\d+(?:（.*）)?$/.test(n)||['長男','次男','三男','長女','次女'].some(x=>n.startsWith(x)));
+ const asc=names.filter(n=>/^父母\d+(?:（.*）)?$/.test(n)||['父','母','祖父','祖母'].some(x=>n.startsWith(x)));
+ const sib=names.filter(n=>/^兄弟姉妹\d+(?:（.*）)?$/.test(n)||['兄','弟','姉','妹'].some(x=>n.startsWith(x)));
+ const others=names.filter(n=>![...spouse,...children,...asc,...sib].includes(n));
+ // 従来の自由入力は判定できないため、誤った法定相続分を表示しない。
+ const shares=Object.fromEntries(names.map(n=>[n,0]));
+ if(others.length||spouse.length>1)return null;
+ const assign=(group,portion)=>{for(const n of group)shares[n]=portion/group.length};
+ if(children.length){if(spouse.length)shares[spouse[0]]=0.5;assign(children,spouse.length?0.5:1)}
+ else if(asc.length){if(spouse.length)shares[spouse[0]]=2/3;assign(asc,spouse.length?1/3:1)}
+ else if(sib.length){if(spouse.length)shares[spouse[0]]=3/4;assign(sib,spouse.length?1/4:1)}
+ else if(spouse.length)shares[spouse[0]]=1;
+ else return null;
+ // 続柄の判定漏れや重複によって不正な割合が出る場合は計算を止める。
+ const sum=Object.values(shares).reduce((a,b)=>a+b,0);
+ if(!Number.isFinite(sum)||Math.abs(sum-1)>1e-9)return null;
+ return shares;
+}
+// 任意入力の調整値は、相続人名に紐付けて保存する（単位：万円）
+let adjustments={};
+let calculationMode="basic";
+function adjustmentFor(name){return adjustments[name]||{benefit:0,contribution:0}}
+function adjustValid(){return people.every(n=>{const a=adjustmentFor(n);return Number.isFinite(a.benefit)&&Number.isFinite(a.contribution)&&a.benefit>=0&&a.contribution>=0&&a.benefit<=1e9&&a.contribution<=1e9})}
+function buildAdjustInputs(){
+ const root=document.getElementById('adjustInputs');root.replaceChildren();
+ const head=document.createElement('div');head.className='adjust-row';for(const h of ['相続人','特別受益（万円）','寄与分（万円）']){const t=document.createElement('span');t.className='adjust-heading';t.textContent=h;head.append(t)}root.append(head);
+ for(const n of people){const row=document.createElement('div');row.className='adjust-row';const name=document.createElement('strong');name.textContent=n;row.append(name);
+ for(const field of ['benefit','contribution']){const wrap=document.createElement('label');const input=document.createElement('input');input.type='number';input.min='0';input.max='1000000000';input.step='1';input.inputMode='numeric';input.value=adjustmentFor(n)[field]||0;input.setAttribute('aria-label',n+(field==='benefit'?'の特別受益':'の寄与分')+'（万円）');input.addEventListener('input',()=>{const v=Number(input.value);if(input.value===''||!Number.isFinite(v)||v<0||v>1e9){input.setCustomValidity('0以上の金額を入力してください');}else{input.setCustomValidity('');adjustments[n]={...adjustmentFor(n),[field]:v}}render()});wrap.append(input);row.append(wrap)}root.append(row)
+ }
+}
+function setCalculationMode(mode){
+ calculationMode=mode;
+ const adjusted=mode==='adjusted';
+ document.getElementById('modeBasic').classList.toggle('active',!adjusted);
+ document.getElementById('modeAdjusted').classList.toggle('active',adjusted);
+ document.getElementById('modeBasic').setAttribute('aria-pressed',String(!adjusted));
+ document.getElementById('modeAdjusted').setAttribute('aria-pressed',String(adjusted));
+ document.getElementById('modeWarning').hidden=!adjusted;
+ document.getElementById('basicView').hidden=adjusted;
+ document.getElementById('adjustSection').hidden=!adjusted;
+ document.getElementById('legalDetailBlock').hidden=adjusted;
+ document.querySelector('#allCalculationDetails summary span').textContent=adjusted?'（遺留分・相続税）':'（配分・遺留分・相続税）';
+ render();
+}
+function adjustedScenario(shares,total){
+ if(!shares||!adjustValid()||total<0)return null;
+ const benefits=people.reduce((s,n)=>s+adjustmentFor(n).benefit,0);
+ const contributions=people.reduce((s,n)=>s+adjustmentFor(n).contribution,0);
+ const pool=total+benefits-contributions;
+ if(pool<0)return null;
+ const target=Object.fromEntries(people.map(n=>[n,pool*shares[n]-adjustmentFor(n).benefit+adjustmentFor(n).contribution]));
+ return {pool,benefits,contributions,target};
+}
+function updateAdjustChart(){
+ const root=document.getElementById('adjustChart'),msg=document.getElementById('adjustMessage');root.replaceChildren();msg.className='adjust-message';
+ const shares=legalShares(people),total=assets.reduce((s,a)=>s+a.value,0),unassigned=assets.some(a=>ownership[a.id]==='未配分');
+ if(!shares||total<0||!adjustValid()){msg.classList.add('warning');msg.textContent='相続人の続柄・財産額・入力金額を確認してください。';return}
+ const benefits=people.reduce((s,n)=>s+adjustmentFor(n).benefit,0),contributions=people.reduce((s,n)=>s+adjustmentFor(n).contribution,0);
+ const pool=total+benefits-contributions;
+ if(pool<0){msg.classList.add('warning');msg.textContent='寄与分の合計が大きく、調整の計算対象額がマイナスです。入力値を確認してください。';return}
+ const rows=people.map(n=>({name:n,actual:assets.filter(a=>ownership[a.id]===n).reduce((sum,a)=>sum+a.value,0),target:pool*shares[n]-adjustmentFor(n).benefit+adjustmentFor(n).contribution}));
+ const scale=Math.max(1,...rows.flatMap(r=>[Math.abs(r.actual),Math.abs(r.target)]));
+ const title=document.createElement('h3');title.textContent='調整後の取り分と実際の配分';root.append(title);
+ const legend=document.createElement('div');legend.className='adjust-legend';for(const [color,label] of [['#468f86','調整後の取り分'],['#ed9b49','実際の配分']]){const span=document.createElement('span');const i=document.createElement('i');i.style.background=color;span.append(i,document.createTextNode(label));legend.append(span)}root.append(legend);
+ for(const r of rows){const group=document.createElement('div');group.className='allocation-person';const name=document.createElement('div');name.className='allocation-person-name';name.textContent=r.name;group.append(name);for(const [label,v,cls] of [['調整',r.target,'adjust-fill'],['実際',r.actual,'actual']]){const line=document.createElement('div');line.className='allocation-line';const lab=document.createElement('span');lab.className='allocation-line-label';lab.textContent=label;const track=document.createElement('div');track.className='allocation-track'+(rows.some(q=>q.actual<0||q.target<0)?' signed':'');const fill=document.createElement('div');fill.className='allocation-fill '+(v<0?'negative':cls);if(track.classList.contains('signed')){fill.style.width=(Math.abs(v)/scale*50)+'%';fill.style.left=(v<0?50-Math.abs(v)/scale*50:50)+'%';}else{fill.style.width=(Math.abs(v)/scale*100)+'%';}track.append(fill);const amount=document.createElement('strong');amount.className='allocation-amount';amount.textContent=fmt(Math.round(v));line.append(lab,track,amount);group.append(line)}root.append(group)}
+ const table=document.createElement('div');table.className='adjust-summary';const t=document.createElement('table');const header=document.createElement('tr');for(const h of ['相続人','実際の配分','特別受益','寄与分','調整後の取り分','差額']){const th=document.createElement('th');th.textContent=h;header.append(th)}t.append(header);for(const r of rows){const tr=document.createElement('tr');const adj=adjustmentFor(r.name);for(const v of [r.name,fmt(r.actual),fmt(adj.benefit),fmt(adj.contribution),fmt(Math.round(r.target)),fmt(Math.round(r.actual-r.target))]){const td=document.createElement('td');td.textContent=v;tr.append(td)}t.append(tr)}table.append(t);root.append(table);
+ const gaps=rows.filter(r=>r.actual<r.target-0.000001);if(unassigned){msg.classList.add('warning');msg.textContent='未配分の財産があります。グラフは途中の比較です。'}else if(gaps.length){msg.classList.add('warning');msg.textContent=gaps.map(r=>r.name+'さんは調整後の取り分より'+fmt(Math.round(r.target-r.actual))+'少ない配分です。').join(' ')+' 話し合いの参考にしてください（法的な不足額・請求額ではありません）。マイナスの取り分は返還義務を意味しません。'}else{msg.textContent='入力された特別受益・寄与分を考慮した簡易比較では、調整後の取り分を下回る相続人はいません。'}
+}
+function updateComparison(){
+ const total=assets.reduce((s,a)=>s+a.value,0);
+ const unassigned=assets.filter(a=>ownership[a.id]==='未配分').reduce((s,a)=>s+a.value,0);
+ document.getElementById('compareTotal').textContent=fmt(total);
+ document.getElementById('compareUnassigned').textContent=fmt(unassigned);
+ const shares=legalShares(people);const body=document.getElementById('compareRows');body.replaceChildren();
+ for(const name of people){
+  const actual=assets.filter(a=>ownership[a.id]===name).reduce((s,a)=>s+a.value,0);
+  const legal=shares?total*(shares[name]||0):null,diff=legal===null?null:actual-legal;
+  const tr=document.createElement('tr');
+  const vals=[name,shares?((shares[name]||0)*100).toFixed(1)+'%':'要確認',legal===null?'要確認':fmt(Math.round(legal)),fmt(actual),diff===null?'要確認':(diff>0?'+':'')+fmt(Math.round(diff))];
+  for(const v of vals){const td=document.createElement('td');td.textContent=v;tr.append(td)}
+  body.append(tr);
+ }
+ updateAllocationChart(shares,total);
+ document.getElementById('compareNote').textContent=(assets.some(a=>ownership[a.id]==='未配分')?'未配分の財産があります。すべて配分するまでは、実際の配分額の合計が財産総額と一致しません。 ':'')+(shares?'法定相続分は簡易比較です。代襲相続・養子・相続放棄・半血兄弟姉妹等には対応していません。':'続柄を判定できない相続人がいます。法定相続分は表示できません。');
+}
+// 相続人別の法定額・実配分額を比較する表示専用グラフ（計算式は変更しない）
+function updateAllocationChart(shares,total){
+ const root=document.getElementById('allocationChart');
+ root.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent='法定相続額と実際の配分額';root.append(heading);
+ const legend=document.createElement('div');legend.className='allocation-legend';
+ for(const [cls,label] of [['legal','法定相続額'],['actual','実際の配分額']]){
+  const item=document.createElement('span');const dot=document.createElement('i');dot.className=cls;item.append(dot,document.createTextNode(label));legend.append(item);
+ }
+ root.append(legend);
+ if(!shares||total<0){const p=document.createElement('p');p.className='hint';p.textContent='相続人の続柄または財産総額を確認してください。';root.append(p);return}
+ const rows=people.map(name=>({name,legal:total*(shares[name]||0),actual:assets.filter(a=>ownership[a.id]===name).reduce((sum,a)=>sum+a.value,0)}));
+ const scale=Math.max(1,...rows.flatMap(r=>[Math.abs(r.legal),Math.abs(r.actual)]));
+ for(const r of rows){
+  const group=document.createElement('div');group.className='allocation-person';
+  const name=document.createElement('div');name.className='allocation-person-name';name.textContent=r.name;group.append(name);
+  for(const [kind,value] of [['legal',r.legal],['actual',r.actual]]){
+   const line=document.createElement('div');line.className='allocation-line';
+   const label=document.createElement('span');label.className='allocation-line-label';label.textContent=kind==='legal'?'法定':'実際';
+   const track=document.createElement('div');track.className='allocation-track'+(rows.some(q=>q.legal<0||q.actual<0)?' signed':'');
+   const fill=document.createElement('div');fill.className='allocation-fill '+(value<0?'negative':kind);
+   if(track.classList.contains('signed')){fill.style.width=(Math.abs(value)/scale*50)+'%';fill.style.left=(value<0?50-Math.abs(value)/scale*50:50)+'%';}else{fill.style.width=(Math.abs(value)/scale*100)+'%';}track.append(fill);
+   const amount=document.createElement('strong');amount.className='allocation-amount';amount.textContent=fmt(Math.round(value));
+   line.append(label,track,amount);group.append(line);
+  }
+  root.append(group);
+ }
+ const note=document.createElement('p');note.className='allocation-footnote';
+ note.textContent='棒の長さは金額を比較しています。マイナスの金額は中央の0より左側、プラスは右側に表示します。'+(assets.some(a=>ownership[a.id]==='未配分')?' 未配分の財産があるため、途中の結果です。':'');
+ root.append(note);
+}
+// 遺留分・相続税：正式版の簡易計算をゲーム版へ移植（万円単位）
+const taxBrackets=[[1000,.10,0],[3000,.15,50],[5000,.20,200],[10000,.30,700],[20000,.40,1700],[30000,.45,2700],[60000,.50,4200],[Infinity,.55,7200]];
+function taxFromAmount(amount){if(amount<=0)return 0;for(const [upper,rate,deduction] of taxBrackets){if(amount<=upper)return Math.max(0,amount*rate-deduction)}return 0}
+function heirType(name){const b=baseOf(name);if(b==='配偶者'||b==='妻'||b==='夫')return 'spouse';if(/^子\d+$/.test(b)||/^(長男|次男|三男|長女|次女)/.test(b))return 'child';if(/^父母\d+$/.test(b)||/^(父|母|祖父|祖母)/.test(b))return 'parent';if(/^兄弟姉妹\d+$/.test(b)||/^(兄|弟|姉|妹)/.test(b))return 'sibling';return 'unknown'}
+function resultTable(headers,rows){const wrap=document.createElement('div');wrap.className='result-scroll';const table=document.createElement('table');const head=document.createElement('thead');const tr=document.createElement('tr');for(const h of headers){const th=document.createElement('th');th.textContent=h;tr.append(th)}head.append(tr);table.append(head);const body=document.createElement('tbody');for(const row of rows){const r=document.createElement('tr');for(const v of row){const td=document.createElement('td');td.textContent=v;r.append(td)}body.append(r)}table.append(body);wrap.append(table);return wrap}
+function note(container,msg,cls='calc-note'){const p=document.createElement('p');p.className=cls;p.textContent=msg;container.append(p)}
+function metrics(container,items){const wrap=document.createElement('div');wrap.className='result-metrics';for(const [label,value] of items){const div=document.createElement('div');div.textContent=label;const strong=document.createElement('strong');strong.textContent=value;div.append(strong);wrap.append(div)}container.append(wrap)}
+// 第16段階：グラフ直下の注意表示。未配分がある間は不足を断定しない。
+function updateInheritanceAlert(shares,types,total,actual,unassigned){
+ const root=document.getElementById('inheritanceAlert');root.replaceChildren();root.className='inheritance-alert';
+ const headline=document.createElement('strong');const body=document.createElement('p');
+ if(!shares||types.includes('unknown')||total<0){root.classList.add('pending');headline.textContent='計算条件を確認してください';body.textContent='相続人の続柄や財産額を確認すると、遺留分の不足を判定できます。';}
+ else if(unassigned){root.classList.add('pending');headline.textContent='財産をすべて分けると、遺留分の不足を確認できます';body.textContent='未配分の財産があるため、現在は判定を保留しています。';}
+ else {
+  const ascOnly=types.every(t=>t==='parent');const factor=ascOnly?1/3:1/2;
+  const shortages=people.map((n,i)=>({name:n,shortage:Math.max(0,total*(types[i]==='sibling'?0:shares[n]*factor)-actual[n])})).filter(x=>x.shortage>0.000001);
+  if(shortages.length){root.classList.add('danger');headline.textContent='⚠ 遺留分が不足しています';
+   const lines=document.createElement('div');lines.className='alert-shortages';for(const x of shortages){const row=document.createElement('div');row.textContent=x.name+'さん：'+fmt(Math.round(x.shortage))+'不足';lines.append(row)}root.append(headline,lines);body.textContent='この分け方は、将来トラブルになる可能性があります。金額は簡易計算による不足の目安で、実際の請求額とは異なる場合があります。';root.append(body);return;
+  }else{root.classList.add('ok');headline.textContent='遺留分の不足はありません';body.textContent='今回の簡易計算では不足は見られません。ただし、相続トラブルが起きないことを保証するものではありません。';}
+ }
+ root.append(headline,body);
+}
+function calcAdjustedResults(){
+ const reserved=document.getElementById('reservedContent'),tax=document.getElementById('taxContent');reserved.replaceChildren();tax.replaceChildren();
+ const shares=legalShares(people),types=people.map(heirType),total=assets.reduce((s,a)=>s+a.value,0),unassigned=assets.some(a=>ownership[a.id]==='未配分');
+ const sc=adjustedScenario(shares,total);
+ if(!sc||types.includes('unknown')){note(reserved,'続柄・財産額・特別受益／寄与分の入力を確認してください。','warn');note(tax,'計算条件を確認してください。','warn');return}
+ const actual=Object.fromEntries(people.map(n=>[n,assets.filter(a=>ownership[a.id]===n).reduce((sum,a)=>sum+a.value,0)]));
+ // ゲーム専用の単純な仮定：調整後の取り分を遺留分と税額配分の基礎とする。
+ const ascOnly=types.every(t=>t==='parent');const factor=ascOnly?1/3:1/2;
+ const rows=people.map((n,i)=>{const ratio=types[i]==='sibling'?0:shares[n]*factor;const min=Math.max(0,sc.target[n]*factor);const gap=Math.max(0,min-actual[n]);return [n,(ratio*100).toFixed(2)+'%',fmt(Math.round(min)),unassigned?'配分途中':fmt(actual[n]),unassigned?'未配分あり':fmt(Math.round(gap))]});
+ reserved.append(resultTable(['相続人','参考割合','遺留分の参考額','実際の配分','不足の参考額'],rows));
+ note(reserved,'ゲーム上の仮定：調整後の取り分×遺留分係数（原則1/2、直系尊属のみ1/3）を参考額とし、実際の配分と比較します。法的な遺留分算定方法とは異なります。マイナスの取り分は0として扱います。');
+ if(unassigned)note(reserved,'未配分の財産があるため不足の判定は保留です。','warn');
+ // 第22段階：相続税は特別受益・寄与分を課税財産総額に加減算せず、実際の配分額で按分。
+ const deduction=3000+600*people.length,taxable=Math.max(0,total-deduction);
+ const legalTaxes=people.map(n=>taxFromAmount(taxable*shares[n]));const preTotal=legalTaxes.reduce((s,v)=>s+v,0);
+ metrics(tax,[['相続財産の正味額（特別受益・寄与分は加減算しない）',fmt(total)],['基礎控除',fmt(deduction)],['課税遺産総額',fmt(taxable)],['軽減前の相続税総額',fmt(Math.round(preTotal))]]);
+ if(!taxable){note(tax,'入力された財産だけを前提とすると、基礎控除以下のため概算税額は0万円です。');return}
+ if(unassigned){note(tax,'財産が未配分のため、相続人別の税額と配偶者の税額軽減はまだ計算していません。','warn');return}
+ // 借入金カードは各人の正味取得額から控除済み。負の正味取得額が生じた場合、
+ // 正の取得額だけで再按分すると税額が誤解を招くため、相続人別の試算を保留する。
+ if(people.some(n=>actual[n]<0)){
+  note(tax,'借入金などにより正味取得額がマイナスの相続人がいます。債務の帰属や負担関係を確認する必要があるため、相続人別の概算税額は表示しません。','warn');return;
+ }
+ const pos=people.map(n=>actual[n]),positiveSum=pos.reduce((s,v)=>s+v,0);
+ if(positiveSum<=0||Math.abs(positiveSum-total)>0.00001){note(tax,'正味取得額と財産総額が一致しないため、相続人別の税額は計算できません。','warn');return}
+ const before=pos.map(v=>preTotal*v/positiveSum),after=before.slice();
+ let spouseCredit=0;
+ for(let i=0;i<people.length;i++){
+  if(types[i]==='spouse'){
+   // 正式版の簡易計算と同じ考え方。実際の正味取得額と法定相続分相当額で上限を判定。
+   const limit=Math.max(16000,total*shares[people[i]]);
+   const creditRatio=pos[i]>0?Math.min(1,limit/pos[i]):0;
+   spouseCredit=before[i]*creditRatio;after[i]=creditRatio>=1-1e-10?0:Math.max(0,before[i]-spouseCredit);
+  }
+ }
+ for(let i=0;i<people.length;i++)if(types[i]==='sibling')after[i]*=1.2;
+ const afterTotal=after.reduce((s,v)=>s+v,0);
+ const taxConditions=taxResultDisplay(tax,people,types,actual,before,after);
+ note(tax,'特別受益は相続税の加算対象期間外の暦年贈与とし、寄与分も課税財産総額から控除しません。税額はカードで実際に取得した額を基に配分します。借入金カードは置いた箱の相続人の正味取得額から控除する簡易方式です。実際の債務控除は負担者・債務の性質などの確認が必要です。' +taxConditions);
+}
+// 表示上の端数を0.1万円単位で配分し、各人の合計と総額を一致させる。
+function taxDisplayAmounts(values){
+ const scaled=values.map(v=>Math.max(0,v)*10),base=scaled.map(v=>Math.floor(v+1e-9));
+ let remain=Math.round(scaled.reduce((a,b)=>a+b,0))-base.reduce((a,b)=>a+b,0);
+ const order=scaled.map((v,i)=>({i,frac:v-base[i],eligible:v>1e-8})).filter(x=>x.eligible).sort((a,b)=>b.frac-a.frac||a.i-b.i);
+ for(let j=0;j<remain&&order.length;j++)base[order[j%order.length].i]++;
+ return base.map(v=>v/10);
+}
+function taxResultDisplay(tax,people,types,actual,before,after){
+ const beforeShown=taxDisplayAmounts(before),afterShown=taxDisplayAmounts(after);
+ metrics(tax,[['相続税の合計（概算）',fmt1(afterShown.reduce((s,v)=>s+v,0))]]);
+ tax.append(resultTable(['相続人','取得額','相続税（軽減・加算前）','相続税（概算）'],people.map((n,i)=>[n,fmt(actual[n]),fmt1(beforeShown[i]),fmt1(afterShown[i])])));
+ // 第25段階：該当する相続人がいる場合だけ、税額軽減・加算の説明を表の直下に表示。
+ if(types.includes('spouse')){
+  const heading=document.createElement('strong');heading.textContent='配偶者の税額軽減について';
+  const paragraph=document.createElement('p');paragraph.textContent='配偶者が実際に取得した正味の遺産額が、1億6,000万円または法定相続分相当額のいずれか多い金額までであれば、原則として配偶者に相続税はかかりません。この軽減を受けるには、原則として相続税の申告が必要です。';
+  const block=document.createElement('div');block.className='tax-explanation';block.append(heading,paragraph);tax.append(block);
+ }
+ if(types.includes('sibling')){
+  const heading=document.createElement('strong');heading.textContent='兄弟姉妹の相続税の2割加算について';
+  const paragraph=document.createElement('p');paragraph.textContent='兄弟姉妹が財産を相続した場合、その人の相続税額には原則として20％が加算されます。例えば、通常の相続税額が100万円なら、2割加算後は120万円になります。';
+  const block=document.createElement('div');block.className='tax-explanation';block.append(heading,paragraph);tax.append(block);
+ }
+ return '';
+}
+function fmt1(n){return n.toLocaleString('ja-JP',{minimumFractionDigits:1,maximumFractionDigits:1})+'万円'}
+function calcResults(){
+ if(calculationMode==='adjusted'){calcAdjustedResults();return}
+ const reserved=document.getElementById('reservedContent'),tax=document.getElementById('taxContent');reserved.replaceChildren();tax.replaceChildren();
+ const shares=legalShares(people),types=people.map(heirType),total=assets.reduce((s,a)=>s+a.value,0),unassigned=assets.some(a=>ownership[a.id]==='未配分');
+ if(!shares||types.includes('unknown')||total<0){updateInheritanceAlert(shares,types,total,{},unassigned);note(reserved,'続柄が判定できないか、財産総額がマイナスのため計算できません。','warn');note(tax,'続柄が判定できないか、財産総額がマイナスのため計算できません。','warn');return}
+ const actual=Object.fromEntries(people.map(n=>[n,assets.filter(a=>ownership[a.id]===n).reduce((s,a)=>s+a.value,0)]));
+ updateInheritanceAlert(shares,types,total,actual,unassigned);
+ const ascOnly=types.every(t=>t==='parent');const overall=ascOnly?1/3:1/2;
+ const reservedRows=people.map((n,i)=>{const ratio=types[i]==='sibling'?0:shares[n]*overall;const min=total*ratio;const shortage=unassigned?'未配分あり':fmt(Math.round(Math.max(0,min-actual[n])));return[n,(ratio*100).toFixed(2)+'%',fmt(Math.round(min)),unassigned?'配分途中':fmt(actual[n]),shortage]});
+ reserved.append(resultTable(['相続人','遺留分割合','遺留分の目安','実際の配分','不足の目安'],reservedRows));
+ note(reserved,'【不足の目安とは？】法律で保障される最低限の取り分（遺留分）に対して、実際の配分額がどれだけ足りないかを示します。例えば遺留分650万円・実際の配分500万円なら、不足の目安は150万円です。借入金などがある場合、実際に請求できる金額とは異なることがあります。');
+ note(reserved,'遺留分は、原則として法定相続分×1/2（直系尊属のみが相続人の場合は×1/3）。兄弟姉妹にはありません。生前贈与・特別受益等は未反映です。');
+ if(unassigned)note(reserved,'未配分の財産があるため、不足額の判定は保留しています。','warn');
+ const deduction=3000+600*people.length,taxable=Math.max(0,total-deduction);
+ const legalTaxes=people.map(n=>taxFromAmount(taxable*shares[n]));const preTotal=legalTaxes.reduce((s,v)=>s+v,0);
+ metrics(tax,[['正味の財産額（入力値）',fmt(total)],['基礎控除',fmt(deduction)],['課税遺産総額',fmt(taxable)],['軽減前の相続税総額',fmt(Math.round(preTotal))]]);
+ if(!taxable){note(tax,'入力された財産だけを前提とすると、基礎控除以下のため概算税額は0万円です。');return}
+ if(unassigned){note(tax,'財産が未配分のため、相続人別の税額と配偶者の税額軽減はまだ計算していません。','warn');return}
+ // 借入金カードは各人の正味取得額から控除済み。負の正味取得額が生じた場合、
+ // 正の取得額だけで再按分すると税額が誤解を招くため、相続人別の試算を保留する。
+ if(people.some(n=>actual[n]<0)){
+  note(tax,'借入金などにより正味取得額がマイナスの相続人がいます。債務の帰属や負担関係を確認する必要があるため、相続人別の概算税額は表示しません。','warn');return;
+ }
+ const pos=people.map(n=>actual[n]),positiveSum=pos.reduce((s,v)=>s+v,0);
+ if(positiveSum<=0||Math.abs(positiveSum-total)>0.00001){note(tax,'正味取得額と財産総額が一致しないため、相続人別の税額は計算できません。','warn');return}
+ const before=pos.map(v=>preTotal*v/positiveSum),after=before.slice();
+ let spouseCredit=0;
+ for(let i=0;i<people.length;i++){
+  if(types[i]==='spouse'){
+   // 正式版の簡易計算と同じ考え方。実際の正味取得額と法定相続分相当額で上限を判定。
+   const limit=Math.max(16000,total*shares[people[i]]);
+   const creditRatio=pos[i]>0?Math.min(1,limit/pos[i]):0;
+   spouseCredit=before[i]*creditRatio;after[i]=creditRatio>=1-1e-10?0:Math.max(0,before[i]-spouseCredit);
+  }
+ }
+ for(let i=0;i<people.length;i++)if(types[i]==='sibling')after[i]*=1.2;
+ const afterTotal=after.reduce((s,v)=>s+v,0);
+ const taxConditions=taxResultDisplay(tax,people,types,actual,before,after);
+ note(tax,'借入金カードは置いた箱の相続人の正味取得額から控除する簡易方式です。実際の債務控除は負担者・債務の性質などの確認が必要です。' +taxConditions);
+}
+function render(){for(const z of zones)z.replaceChildren();for(const a of assets){const target=zones.find(z=>z.dataset.owner===ownership[a.id])||zones[0];target.append(nodes.get(a.id))}for(const name of people){document.querySelector('[data-total="'+name+'"]').textContent='合計 '+fmt(assets.filter(a=>ownership[a.id]===name).reduce((s,a)=>s+a.value,0))}updateComparison();calcResults();updateAdjustChart()}
+let drag=null;let lastDeleted=null;let editTarget=null;let seq=0;const catalog={'土地':'🟫','建物':'🏠','預金':'💰','株式':'📈','借入金':'🧾','その他':'📦'};function locate(x,y){const target=document.elementFromPoint(x,y);return target?.closest('.dropzone,#trash')||null}function highlight(zone){[...zones,document.getElementById('trash')].forEach(z=>z.classList.toggle('over',z===zone))}function stop(ev){if(!drag)return;const d=drag;drag=null;window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',stop);window.removeEventListener('pointercancel',cancel);d.source.style.visibility='';d.ghost.remove();highlight(null);if(ev.type==='pointercancel')return;const dist=Math.hypot(ev.clientX-d.startX,ev.clientY-d.startY);if(dist<7){if(d.kind==='asset')openCard(d.id);return}const zone=locate(ev.clientX,ev.clientY);if(!zone){document.getElementById('status').textContent='枠の外で離したため、変更しませんでした。';return}if(d.kind==='template'){if(zone.id==='trash')return;const kind=d.template;const id='new_'+Date.now()+'_'+(++seq);const a={id,kind,icon:catalog[kind],name:kind==='預金'?'現金・預金':kind,value:kind==='借入金'?-100:0};if(kind==='土地'||kind==='建物')a.cash_value=0;assets.push(a);ownership[id]=zone.dataset.owner;rebuild();openCard(id);document.getElementById('status').textContent='新しい財産を追加しました。金額を入力してください。';return}if(zone.id==='trash'){const index=assets.findIndex(a=>a.id===d.id);if(index<0)return;lastDeleted={asset:{...assets[index]},owner:ownership[d.id],index};assets.splice(index,1);delete ownership[d.id];document.getElementById('undo').hidden=false;rebuild();document.getElementById('status').textContent='ごみ箱に入れました。「元に戻す」で復元できます。';return}ownership[d.id]=zone.dataset.owner;render();const a=assets.find(a=>a.id===d.id);document.getElementById('status').textContent=a.name+' → '+(zone.dataset.owner==='未配分'?'未配分に戻しました':zone.dataset.owner+'の箱に入りました')}
+function cancel(ev){stop(ev)}function move(ev){if(!drag)return;drag.ghost.style.left=(ev.clientX-drag.dx)+'px';drag.ghost.style.top=(ev.clientY-drag.dy)+'px';highlight(locate(ev.clientX,ev.clientY))}
+document.addEventListener('pointerdown',ev=>{if(ev.button!==0||drag||!document.getElementById('modalCover').hidden)return;const el=ev.target.closest('.asset,.template');if(!el)return;ev.preventDefault();const rect=el.getBoundingClientRect();const ghost=el.cloneNode(true);ghost.classList.add('ghost');ghost.style.width=rect.width+'px';ghost.style.left=rect.left+'px';ghost.style.top=rect.top+'px';document.body.append(ghost);el.style.visibility='hidden';drag={kind:el.classList.contains('template')?'template':'asset',template:el.dataset.kind,id:el.dataset.asset,source:el,ghost,dx:ev.clientX-rect.left,dy:ev.clientY-rect.top,startX:ev.clientX,startY:ev.clientY};window.addEventListener('pointermove',move);window.addEventListener('pointerup',stop);window.addEventListener('pointercancel',cancel)});
+function openCard(id){const a=assets.find(x=>x.id===id);if(!a)return;editTarget=id;document.getElementById('modalTitle').textContent='財産を編集：'+a.name;document.getElementById('modalName').value=a.name;document.getElementById('modalValue').value=a.value;const real=a.kind==='土地'||a.kind==='建物'||a.icon==='🟫'||a.icon==='🏠';document.getElementById('cashBlock').hidden=!real;document.getElementById('modalCash').value=a.cash_value??a.value;document.getElementById('modalCover').hidden=false;document.getElementById('modalValue').focus()}
+function closeCard(){document.getElementById('modalCover').hidden=true;editTarget=null}
+document.getElementById('modalCancel').onclick=closeCard;document.getElementById('modalOk').onclick=()=>{const a=assets.find(x=>x.id===editTarget);if(!a)return;const name=document.getElementById('modalName').value.trim();const value=document.getElementById('modalValue').value;if(!name||value.trim()===''||!Number.isFinite(Number(value))){alert('財産名と金額を入力してください');return}a.name=name;a.value=Math.round(Number(value));if(!document.getElementById('cashBlock').hidden){const cash=document.getElementById('modalCash').value;if(cash.trim()===''||!Number.isFinite(Number(cash))){alert('換金価値を入力してください');return}a.cash_value=Math.round(Number(cash))}closeCard();rebuild();document.getElementById('status').textContent='財産を更新しました。'};
+document.getElementById('undo').onclick=()=>{if(!lastDeleted)return;const d=lastDeleted;assets.splice(Math.min(d.index,assets.length),0,d.asset);ownership[d.asset.id]=people.includes(d.owner)?d.owner:'未配分';lastDeleted=null;document.getElementById('undo').hidden=true;rebuild();document.getElementById('status').textContent='削除した財産を元に戻しました。'};
+const status=document.getElementById('status');
+function rebuild(){buildHeirs();buildNodes();refreshZones();buildAdjustInputs();render()}
+function safeData(data){if(!data||!Array.isArray(data.assets)||!Array.isArray(data.people)||!data.ownership)throw Error('データ形式が違います');if(data.assets.length>100||data.people.length>30)throw Error('件数が多すぎます');const ids=new Set();const names=new Set();for(const a of data.assets){if(typeof a.id!=='string'||!a.id||ids.has(a.id)||typeof a.name!=='string'||!Number.isFinite(Number(a.value)))throw Error('財産データが不正です');ids.add(a.id)}for(const p of data.people){if(typeof p!=='string'||!p.trim()||names.has(p))throw Error('相続人名が不正です');names.add(p)}return {adjustments:(data.adjustments&&typeof data.adjustments==='object'&&!Array.isArray(data.adjustments))?Object.fromEntries(data.people.map(n=>{const a=data.adjustments[n]||{};const b=Number(a.benefit||0),c=Number(a.contribution||0);return[n,{benefit:Number.isFinite(b)&&b>=0&&b<=1e9?b:0,contribution:Number.isFinite(c)&&c>=0&&c<=1e9?c:0}]})): {},assets:data.assets.map(a=>({id:a.id,name:a.name.slice(0,80),icon:String(a.icon||'💰').slice(0,4),value:Math.round(Number(a.value)),kind:String(a.kind||''),...(Number.isFinite(Number(a.cash_value))&&a.cash_value!==undefined?{cash_value:Math.round(Number(a.cash_value))}:{})})),people:data.people,ownership:Object.fromEntries(data.assets.map(a=>[a.id,data.people.includes(data.ownership[a.id])?data.ownership[a.id]:'未配分']))}}
+function accept(data){const d=safeData(data);assets=d.assets;people=d.people;ownership=d.ownership;adjustments=d.adjustments;rebuild();setCalculationMode(data.calculationMode==='adjusted'?'adjusted':'basic');showGame();status.textContent='データを読み込みました。'}
+document.getElementById('modeBasic').onclick=()=>setCalculationMode('basic');
+document.getElementById('modeAdjusted').onclick=()=>setCalculationMode('adjusted');
+document.getElementById('togglePalette').onclick=()=>{const content=document.getElementById('paletteContent');content.hidden=!content.hidden;document.getElementById('togglePalette').setAttribute('aria-expanded',String(!content.hidden));document.getElementById('paletteArrow').textContent=content.hidden?'▾':'▴'};
+const key='tsukande-go-game-draft-v1';
+document.getElementById('save').onclick=()=>{localStorage.setItem(key,JSON.stringify({assets,people,ownership,adjustments,calculationMode}));status.textContent='このブラウザに保存しました。'};
+document.getElementById('load').onclick=()=>{try{const s=localStorage.getItem(key);if(!s)throw Error('保存データがありません');accept(JSON.parse(s))}catch(e){status.textContent=e.message}};
+document.getElementById('export').onclick=()=>{const blob=new Blob([JSON.stringify({assets,people,ownership,adjustments,calculationMode},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='tsukande_go_data.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+document.getElementById('importBtn').onclick=()=>document.getElementById('import').click();
+document.getElementById('import').onchange=async ev=>{const f=ev.target.files?.[0];if(!f)return;try{accept(JSON.parse(await f.text()))}catch(e){status.textContent='読込失敗：'+e.message}ev.target.value=''};
+const editor=document.getElementById('editor');
+function openEditor(){editor.hidden=false;const rows=document.getElementById('assetRows');rows.replaceChildren();for(const a of assets)addRow(a);document.getElementById('peopleEdit').value=people.join('\n');editor.scrollIntoView({behavior:'smooth'})}
+function addRow(a){const row=document.createElement('div');row.className='editrow';row.dataset.id=a.id;for(const [field,value] of [['name',a.name],['value',a.value]]){const input=document.createElement('input');input.dataset.field=field;input.value=value;input.placeholder=field==='name'?'財産名':'金額（万円）';input.type=field==='value'?'number':'text';row.append(input)}const del=document.createElement('button');del.textContent='削除';del.onclick=()=>row.remove();row.append(del);document.getElementById('assetRows').append(row)}
+document.getElementById('edit').onclick=openEditor;document.getElementById('cancelEdit').onclick=()=>editor.hidden=true;
+document.getElementById('addAsset').onclick=()=>addRow({id:'a_'+Date.now()+'_'+Math.floor(Math.random()*100000),name:'新しい財産',value:0});
+document.getElementById('apply').onclick=()=>{try{const nextPeople=document.getElementById('peopleEdit').value.split('\n').map(x=>x.trim()).filter(Boolean);const nextAssets=[...document.querySelectorAll('.editrow')].map(row=>({id:row.dataset.id,name:row.querySelector('[data-field=name]').value.trim(),value:Number(row.querySelector('[data-field=value]').value),icon:assets.find(a=>a.id===row.dataset.id)?.icon||'💰',kind:assets.find(a=>a.id===row.dataset.id)?.kind||'預金',cash_value:assets.find(a=>a.id===row.dataset.id)?.cash_value}));if(nextAssets.some(a=>!a.name))throw Error('財産名が空欄です');accept({assets:nextAssets,people:nextPeople,ownership,adjustments});editor.hidden=true;showGame();status.textContent='編集内容を反映しました。'}catch(e){status.textContent='編集エラー：'+e.message}};
+buildAdjustInputs();
+document.getElementById('reset').addEventListener('click',()=>{assets.forEach(a=>ownership[a.id]='未配分');render();document.getElementById('status').textContent='初期状態に戻しました。'});render();
+
+// 第9段階：簡単設定＋任意の名前。人物カードは使わない。
+let setupSpouse=true,setupChildren=2;
+let spouseNickname='',childNicknames=Array(10).fill('');
+const setupEl=document.getElementById('heirSetup'),gameEl=document.getElementById('gameArea');
+const makeLabel=(base,nick)=>nick.trim()?base+'（'+nick.trim()+'）':base;
+function currentNames(){return [...(setupSpouse?[makeLabel('配偶者',spouseNickname)]:[]),...Array.from({length:setupChildren},(_,i)=>makeLabel('子'+(i+1),childNicknames[i]))]}
+function baseOf(name){const m=String(name).match(/^(配偶者|子\d+|父母\d+|兄弟姉妹\d+)(?:（[^）]*）)?$/);return m?m[1]:name}
+function updateNameFields(){
+ const fields=document.getElementById('optionalNameFields');fields.replaceChildren();
+ const add=(base,value,save)=>{const row=document.createElement('div');row.className='optional-name-row';const lab=document.createElement('label');lab.textContent=base;const inp=document.createElement('input');inp.type='text';inp.maxLength=20;inp.placeholder='入力しなくてもOK';inp.value=value;inp.addEventListener('input',()=>{save(inp.value);updatePreview()});row.append(lab,inp);fields.append(row)};
+ if(setupSpouse)add('配偶者',spouseNickname,v=>spouseNickname=v);
+ for(let i=0;i<setupChildren;i++)add('子'+(i+1),childNicknames[i],v=>childNicknames[i]=v);
+}
+function updatePreview(){const names=currentNames();document.getElementById('heirPreview').textContent=names.length?'相続人の箱：'+names.join('・'):'相続人が選択されていません';document.getElementById('setupWarning').textContent=''}
+function updateSetup(){
+ document.getElementById('spouseYes').classList.toggle('active',setupSpouse);
+ document.getElementById('spouseNo').classList.toggle('active',!setupSpouse);
+ document.getElementById('childCount').textContent=setupChildren+'人';
+ document.getElementById('childMinus').disabled=setupChildren===0;
+ document.getElementById('childPlus').disabled=setupChildren===10;
+ updateNameFields();updatePreview();
+}
+function showGame(){setupEl.hidden=true;gameEl.hidden=false;editor.hidden=true;window.scrollTo({top:0,behavior:'instant'});}
+function showSetup(){setupEl.hidden=false;gameEl.hidden=true;editor.hidden=true;window.scrollTo({top:0,behavior:'instant'});}
+document.getElementById('spouseYes').onclick=()=>{setupSpouse=true;updateSetup()};
+document.getElementById('spouseNo').onclick=()=>{setupSpouse=false;updateSetup()};
+document.getElementById('childMinus').onclick=()=>{setupChildren=Math.max(0,setupChildren-1);updateSetup()};
+document.getElementById('childPlus').onclick=()=>{setupChildren=Math.min(10,setupChildren+1);updateSetup()};
+function applyHeirs(names){
+ const previousAdjustments=adjustments;const previousPeople=people.slice();
+ if(!names.length){document.getElementById('setupWarning').textContent='相続人を1人以上選択してください。';return false}
+ if(new Set(names).size!==names.length){document.getElementById('setupWarning').textContent='同じ名前の相続人がいます。';return false}
+ const old=people.slice();const newByBase=new Map(names.map(n=>[baseOf(n),n]));
+ for(const a of assets){const owner=ownership[a.id];if(owner==='未配分')continue;const key=baseOf(owner);if(newByBase.has(key))ownership[a.id]=newByBase.get(key);else if(!names.includes(owner))ownership[a.id]='未配分'}
+ people=names;adjustments=Object.fromEntries(names.map(n=>{const oldName=previousPeople.find(o=>baseOf(o)===baseOf(n));return[n,oldName?{...(previousAdjustments[oldName]||{benefit:0,contribution:0})}:{benefit:0,contribution:0}]}));rebuild();showGame();status.textContent='相続人を設定しました。';return true;
+}
+document.getElementById('startGame').onclick=()=>applyHeirs(currentNames());
+document.getElementById('changeHeirs').onclick=()=>{
+ // 名前を付けた後でも元の簡単設定へ戻せる。
+ setupSpouse=people.some(n=>baseOf(n)==='配偶者');
+ const spouseName=people.find(n=>baseOf(n)==='配偶者');
+ if(spouseName)spouseNickname=(spouseName.match(/^配偶者（(.*)）$/)||[])[1]||'';
+ const children=people.filter(n=>/^子\d+$/.test(baseOf(n)));
+ setupChildren=children.length;
+ for(let i=0;i<10;i++){const found=people.find(n=>baseOf(n)==='子'+(i+1));childNicknames[i]=found?(found.match(/^子\d+（(.*)）$/)||[])[1]||'':''}
+ updateSetup();showSetup();
+ const isAdvanced=people.some(n=>/^(父母|兄弟姉妹)\d+/.test(n));
+ if(isAdvanced){advancedMode=true;advSpouse=setupSpouse;advChildren=setupChildren;advParents=people.filter(n=>/^父母\d+/.test(n)).length;advSiblings=people.filter(n=>/^兄弟姉妹\d+/.test(n)).length;for(const n of people){const b=baseOf(n);advNicks[b]=(n.match(/（(.*)）$/)||[])[1]||'';}showAdvanced()}else{advancedMode=false;showSimple()}
+};
+document.getElementById('advancedHeirs').onclick=()=>{advSpouse=setupSpouse;advChildren=setupChildren;showAdvanced()};
+let advancedMode=false,advSpouse=true,advChildren=2,advParents=0,advSiblings=0;
+const advNicks={};
+function showAdvanced(){advancedMode=true;document.getElementById('simpleSetup').hidden=true;document.getElementById('advancedPanel').hidden=false;updateAdvanced()}
+function showSimple(){advancedMode=false;document.getElementById('simpleSetup').hidden=false;document.getElementById('advancedPanel').hidden=true;updateSetup()}
+function advBases(){const group=advChildren?'子':advParents?'父母':advSiblings?'兄弟姉妹':null;const count=group==='子'?advChildren:group==='父母'?advParents:group==='兄弟姉妹'?advSiblings:0;return [...(advSpouse?['配偶者']:[]),...Array.from({length:count},(_,i)=>group+(i+1))]}
+function updateAdvanced(){
+ for(const [yes,no] of [['advSpouseYes','advSpouseNo']]){document.getElementById(yes).classList.toggle('active',advSpouse);document.getElementById(no).classList.toggle('active',!advSpouse)}
+ for(const [type,num] of [['Child',advChildren],['Parent',advParents],['Sibling',advSiblings]]){document.getElementById('adv'+type+'Count').textContent=num+'人';document.getElementById('adv'+type+'Minus').disabled=num===0;document.getElementById('adv'+type+'Plus').disabled=num===10}
+ const excluded=[];if(advChildren&&advParents)excluded.push('父母など');if((advChildren||advParents)&&advSiblings)excluded.push('兄弟姉妹');
+ document.getElementById('advExcluded').textContent=excluded.length?'※'+excluded.join('・')+'は、今回の法定相続人には含まれません。':'';
+ const bases=advBases();document.getElementById('advPreview').textContent=bases.length?'相続人の箱：'+bases.map(b=>makeLabel(b,advNicks[b]||'')).join('・'):'相続人が選択されていません';
+ const fields=document.getElementById('advNameFields');fields.replaceChildren();for(const b of bases){const row=document.createElement('div');row.className='optional-name-row';const label=document.createElement('label');label.textContent=b;const input=document.createElement('input');input.maxLength=20;input.placeholder='入力しなくてもOK';input.value=advNicks[b]||'';input.oninput=()=>{advNicks[b]=input.value;document.getElementById('advPreview').textContent='相続人の箱：'+advBases().map(x=>makeLabel(x,advNicks[x]||'')).join('・')};row.append(label,input);fields.append(row)}
+ document.getElementById('advWarning').textContent='';
+}
+document.getElementById('advSpouseYes').onclick=()=>{advSpouse=true;updateAdvanced()};
+document.getElementById('advSpouseNo').onclick=()=>{advSpouse=false;updateAdvanced()};
+for(const [type,variable] of [['Child','children'],['Parent','parents'],['Sibling','siblings']]){
+ const change=(delta)=>{if(type==='Child')advChildren=Math.max(0,Math.min(10,advChildren+delta));if(type==='Parent')advParents=Math.max(0,Math.min(10,advParents+delta));if(type==='Sibling')advSiblings=Math.max(0,Math.min(10,advSiblings+delta));updateAdvanced()};
+ document.getElementById('adv'+type+'Minus').onclick=()=>change(-1);document.getElementById('adv'+type+'Plus').onclick=()=>change(1);
+}
+document.getElementById('advStart').onclick=()=>{const bases=advBases();if(!bases.length){document.getElementById('advWarning').textContent='相続人を1人以上選択してください。';return}applyHeirs(bases.map(b=>makeLabel(b,advNicks[b]||'')))};
+document.getElementById('advBack').onclick=showSimple;
+updateSetup();showSetup();
+</script></body></html>
